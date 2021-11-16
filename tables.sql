@@ -3,9 +3,9 @@ CREATE TABLE parks (
     p_park_code string(100) not null,
     p_park_name string(100) not null,
     p_state string(100) not null,
-    p_Acres string(100) not null,
-    p_Latitude string(100) not null,
-    p_Longitude string(100) not null
+    p_acres string(100) not null,
+    p_latitude string(100) not null,
+    p_longitude string(100) not null
 );
 
 DROP TABLE IF EXISTS species;
