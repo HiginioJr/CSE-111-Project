@@ -95,24 +95,44 @@ WHERE cn_species_id = 'species id';
 SELECT a_scientific_name, cn_common_name, s_park_name, s_category, s_order, s_family
 FROM animals, common_names, species
 WHERE a_scientific_name = 'Urocyon littoralis'
+AND cn_species_name = s_species_name
 AND s_species_id = a_species_id
+GROUP BY s_park_name
 ORDER BY a_scientific_name ASC;
 
 --23
 SELECT pl_scientific_name, cn_common_name, s_park_name, s_category, s_order, s_family
 FROM plants, common_names, species
 WHERE pl_scientific_name = 'Lemna minor'
+AND cn_species_id = s_species_id
 AND s_species_id = pl_species_id
+GROUP BY s_park_name
 ORDER BY pl_scientific_name ASC;
 
 --24
+SELECT p_park_name, p_park_code, p_state, s_abundance, a_conservation_ststus
+FROM parks, species, animals
+WHERE p_park_name = s_park_name
+AND s_species_id = a_species_id
+AND a_scientific_name = 'Enhydra lutris nereis'
+GROUP BY p_park_name;
+
+--25
+SELECT p_park_name, p_park_code, p_state, s_abundance, pl_conservation_status
+FROM parks, species, plants
+WHERE p_park_name = s_park_name
+AND s_species_id = pl_species_id
+AND pl_scientific_name = 'Ruppia maritima'
+GROUP BY p_park_name;
+
+--26
 SELECT a_scientific_name, s_occurrence, s_nativeness, s_abundance, s_seasonality, a_record_status, a_conservation_ststus
 FROM animals, species
 WHERE a_scientific_name = 'Urocyon littoralis'
 AND s_species_id = a_species_id
 ORDER BY a_scientific_name ASC;
 
---25
+--27
 SELECT pl_scientific_name, s_occurrence, s_nativeness, s_abundance, s_seasonality, pl_record_status, pl_conservation_status
 FROM plants, species
 WHERE pl_scientific_name = 'Lemna minor'
@@ -120,13 +140,13 @@ AND s_species_id = pl_species_id
 ORDER BY pl_scientific_name ASC;
 
 --Search Parks
---26
+--28
 SELECT p_park_name, p_state, p_acres, p_latitude, p_longitude
 FROM parks
 WHERE p_park_name = 'Redwood National Park';
 
 --Search Species
---27
+--29
 SELECT s_species_id, s_category, s_order, s_family, s_occurrence, s_nativeness, s_abundance, s_seasonality
 FROM species
 WHERE s_species_id = 'CHIS-1002';
