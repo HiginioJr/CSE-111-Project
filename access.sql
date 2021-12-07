@@ -95,7 +95,7 @@ WHERE cn_species_id = 'species id';
 SELECT a_scientific_name, cn_common_name, s_park_name, s_category, s_order, s_family
 FROM animals, common_names, species
 WHERE a_scientific_name = 'Urocyon littoralis'
-AND cn_species_name = s_species_name
+AND cn_species_id = s_species_id
 AND s_species_id = a_species_id
 GROUP BY s_park_name
 ORDER BY a_scientific_name ASC;
