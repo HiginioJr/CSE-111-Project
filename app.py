@@ -74,9 +74,9 @@ def update_password(_conn, _logged_in_username):
         _conn.rollback()
         print(e)
 
-def insert_search(_conn, _bio_name, _park_name, _username):
+def insert_search(_conn, _bio_name, _park_name, _username, _search_type):
     try:
-        sql = f"""INSERT INTO search(se_bio_name, se_park) VALUES('{_bio_name}', '{_park_name}');"""
+        sql = f"""INSERT INTO search(se_bio_name, se_park, se_search_type) VALUES('{_bio_name}', '{_park_name}', '{_search_type}');"""
         _conn.execute(sql)
         _conn.commit()
         sql2 = f"""INSERT INTO user_searches 
@@ -88,19 +88,32 @@ def insert_search(_conn, _bio_name, _park_name, _username):
         _conn.rollback()
         print(e)
 
+def delete_search(_conn, _search_id):
+    try:
+        sql = f"""DELETE FROM search WHERE se_search_id = {_search_id};"""
+        _conn.execute(sql)
+        _conn.commit()
+        sql2 = f"""DELETE FROM user_searches WHERE us_search_id = {_search_id};"""
+        _conn.execute(sql2)
+        _conn.commit()
+    except Error as e:
+        _conn.rollback()
+        print(e)
+
 def get_user_searches(_conn, _logged_in_username):
     try:
-        sql = f"""SELECT se_bio_name, se_park FROM search, user_searches 
+        sql = f"""SELECT se_bio_name, se_park, se_search_type, se_search_id FROM search, user_searches 
         WHERE us_username = '{_logged_in_username}' AND us_search_id = se_search_id;"""
         res = _conn.execute(sql)
         rows = res.fetchall()
 
-        headers = ("animal/plant search term", "park")
+        headers = ("animal/plant search term", "park", "search type", "search id")
         t = PrettyTable(headers)
         for row in rows:
             t.add_row(row)
         print(t)
-        finish = input("Press any key to return")
+        # finish = input("Press any key to return")
+        return rows
     except Error as e:
         _conn.rollback()
         print(e)
@@ -117,7 +130,8 @@ def get_park_info(_conn, _park_name):
         for row in rows:
             t.add_row(row)
         print(t)
-        return row[1]
+        # print(rows[0])
+        return rows[0][1]
 
     except Error as e:
         _conn.rollback()
@@ -167,7 +181,20 @@ def main():
                     update_password(conn, logged_in_username)
             #view searches
             elif command == 'V':
-                get_user_searches(conn, logged_in_username)
+                result = get_user_searches(conn, logged_in_username)
+                command = input("Type 'S' to search from saved searches, 'D' to delete a search, of 'Q' to return: ")
+                if command == 'S':
+                    command = input("Enter id of desired search: ")
+                    for row in result:
+                        if str(row[3]) == command:
+                            res = get_park_info(conn, row[1])
+                    finish = input("Press any key to return")
+                elif command == 'D':
+                    command = input("Enter id of search to delete: ")
+                    for row in result:
+                        if str(row[3]) == command:
+                            delete_search(conn, row[3])
+                    finish = input("Press any key to return")
             #search
             elif command == 'S':
                 print("Select search operation: ")
@@ -179,7 +206,7 @@ def main():
                     result = get_park_info(conn, search)
                     command = input("Would you like to save this search? Type 'Y' for yes, 'N' for no: ")
                     if command == 'Y':
-                        insert_search(conn, 'none', result, logged_in_username)
+                        insert_search(conn, 'none', result, logged_in_username, 'park')
 
 
 
