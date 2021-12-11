@@ -3,7 +3,6 @@ from sqlite3 import Error
 from prettytable import PrettyTable
 
 def openConnection(_dbFile):
-    print("++++++++++++++++++++++++++++++++++")
     print("Open database: ", _dbFile)
 
     conn = None
@@ -12,14 +11,10 @@ def openConnection(_dbFile):
         print("success")
     except Error as e:
         print(e)
-
-    print("++++++++++++++++++++++++++++++++++")
-
     return conn
 
 
 def closeConnection(_conn, _dbFile):
-    print("++++++++++++++++++++++++++++++++++")
     print("Close database: ", _dbFile)
 
     try:
@@ -27,8 +22,6 @@ def closeConnection(_conn, _dbFile):
         print("success")
     except Error as e:
         print(e)
-
-    print("++++++++++++++++++++++++++++++++++")
 
 def register(_conn):
     new_username = input("Enter new username: ")
@@ -543,7 +536,7 @@ def main():
                             get_park_counts(conn, row[1], "s_order")
                             finish = input("Press any key to return")
                         elif command == 'F':
-                            get_park_counts(conn, row[1], "s_ofamily")
+                            get_park_counts(conn, row[1], "s_family")
                             finish = input("Press any key to return")
                         elif command == 'D':
                             delete_search(conn, row[3])
